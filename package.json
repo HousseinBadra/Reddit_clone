@@ -7,9 +7,11 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "eslint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
-    "prettier": "npx prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint --fix ./src",
+    "format": "prettier ./src",
+    "format:fix": "prettier ./src -w"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
@@ -17,8 +19,6 @@
     "@mui/material": "^5.11.8",
     "@reduxjs/toolkit": "^1.9.2",
     "axios": "^1.3.2",
-    "husky": "^8.0.3",
-    "lint-staged": "^13.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
@@ -45,7 +45,6 @@
     "vite": "^3.2.3"
   },
   "lint-staged": {
-    "src/**/*.{js,tsx,ts,tsx,css,html}": "npx prettier --write",
-    "src/**/*.{js,ts,tsx,jsx}": "npx eslint"
+    "src/**/*.{js,tsx,ts,tsx,css,html}": ["prettier --write", "eslint --fix"]
   }
 }
