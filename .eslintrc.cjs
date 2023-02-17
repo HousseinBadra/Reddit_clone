@@ -22,7 +22,7 @@ module.exports = {
   rules: {
     'prettier/prettier': 'error',
     'react/react-in-jsx-scope': 0,
-    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', 'tsx'] }],
+    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', '.tsx'] }],
     'react/jsx-props-no-spreading': 'off',
     'no-underscore-dangle': 'off',
     'implicit-arrow-linebreak': 'off',
