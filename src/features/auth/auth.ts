@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {};
+type AuthSliceInintialState = { authenticated: boolean };
+
+const initialState = { authenticated: false } as AuthSliceInintialState;
 
 const authSlice = createSlice({
   name: 'login',
