@@ -10,7 +10,7 @@ export default function AuthenticationPage() {
   const uri = window.location.href;
   const dispatch: AppDispatch = useDispatch();
   useEffect(() => {
-    if (query.indexOf('error') !== -1) {
+    if (query.indexOf('error') !== -1 || query === '') {
       navigate('/');
     } else {
       const code: string = query.split('&')[1].split('=')[1];
@@ -30,6 +30,8 @@ export default function AuthenticationPage() {
         })
         .catch((err) => console.log(err));
     }
+
+    navigate('/');
   }, [query, navigate, uri, dispatch]);
 
   return <div>AuthenticationPage</div>;
