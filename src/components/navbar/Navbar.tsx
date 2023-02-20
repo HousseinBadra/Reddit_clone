@@ -15,6 +15,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useSelector } from 'react-redux/es/exports';
 import { RootState } from '../../store';
+import { uuidv4 } from '../../utils/uuid';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -63,6 +64,10 @@ export default function PrimarySearchAppBar() {
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const auth = useSelector((state: RootState) => state.auth);
+
+  const secret = 'YsJl8gazQ52xItqGTGOffQ';
+  const URI = 'http://localhost:5173/Authentication';
+  const scopeArray: string[] = ['account'];
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -154,7 +159,7 @@ export default function PrimarySearchAppBar() {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            REddit Clone
+            Reddit Clone
           </Typography>
           <Search>
             <SearchIconWrapper>
@@ -164,17 +169,23 @@ export default function PrimarySearchAppBar() {
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           {!auth.authenticated ? (
-            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <IconButton
-                size="large"
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                color="inherit"
+            <Box sx={{ display: { xs: 'flex', md: 'flex' } }}>
+              <a
+                href={`https://www.reddit.com/api/v1/authorize?client_id=${secret}&response_type=code&state=${uuidv4()}&redirect_uri=${URI}&duration=permanent&scope=${scopeArray.join(
+                  ' ',
+                )}`}
               >
-                <LoginIcon />
-              </IconButton>
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  color="inherit"
+                >
+                  <LoginIcon />
+                </IconButton>
+              </a>
             </Box>
           ) : (
             <>
