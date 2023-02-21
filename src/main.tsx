@@ -6,6 +6,8 @@ import App from './App';
 import { store } from './store';
 import './css/main.css';
 
+localStorage.clear();
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <BrowserRouter>
