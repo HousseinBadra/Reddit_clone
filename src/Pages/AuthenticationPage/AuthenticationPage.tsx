@@ -18,7 +18,7 @@ export default function AuthenticationPage() {
       navigate('/');
     } else {
       const code: string = query.split('&')[1].split('=')[1];
-      const cred = { grant_type: 'authorization_code', code, redirect_uri: uri };
+
       fetch('https://www.reddit.com/api/v1/access_token', {
         method: 'POST',
         // mode: 'cors',
@@ -27,22 +27,23 @@ export default function AuthenticationPage() {
           Authorization: `Basic ${encoded}`,
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify(cred),
+        body: `grant_type=authorization_code&code=${code}&redirect_uri=${'http://localhost:5173/Authentication'}`,
       })
         .then((r) => r.json())
         .then((r) => {
-          console.log('r', r);
-          dispatch(
-            setAuth({
-              refresh_token: r.refresh_token || '',
-              access_token: r.access_token || '',
-            }),
-          );
+          if (r.access_token) {
+            dispatch(
+              setAuth({
+                refresh_token: r.refresh_token,
+                access_token: r.access_token,
+              }),
+            );
+          }
           navigate('/');
         })
         .catch((err) => {
-          console.log(err);
           navigate('/');
+          console.log(err);
         });
     }
   }, [query, navigate, uri, dispatch, encoded]);

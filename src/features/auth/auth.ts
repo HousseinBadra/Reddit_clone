@@ -42,7 +42,7 @@ const authSlice = createSlice({
       state.refresh_token = action.payload.refresh_token;
       localStorage.setItem('access_token', action.payload.access_token);
       localStorage.setItem('refresh_token', action.payload.refresh_token);
-      state.authenticated = !!action.payload.access_token;
+      state.authenticated = true;
     },
   },
 });
