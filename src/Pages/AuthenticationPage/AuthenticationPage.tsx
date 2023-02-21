@@ -19,20 +19,25 @@ export default function AuthenticationPage() {
     } else {
       const code: string = query.split('&')[1].split('=')[1];
       const cred = { grant_type: 'authorization_code', code, redirect_uri: uri };
-      fetch('https://oauth.reddit.com/api/v1/access_token', {
+      fetch('https://www.reddit.com/api/v1/access_token', {
         method: 'POST',
         // mode: 'cors',
         // credentials: 'same-origin',
         headers: {
-          authorization: `Basic ${encoded}`,
+          Authorization: `Basic ${encoded}`,
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify(cred),
       })
         .then((r) => r.json())
         .then((r) => {
-          console.log(r);
-          dispatch(setAuth({ refresh_token: r.refresh_token, access_token: r.access_token }));
+          console.log('r', r);
+          dispatch(
+            setAuth({
+              refresh_token: r.refresh_token || '',
+              access_token: r.access_token || '',
+            }),
+          );
           navigate('/');
         })
         .catch((err) => {
