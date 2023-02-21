@@ -9,6 +9,10 @@ export default function AuthenticationPage() {
   const query = window.location.search;
   const uri = window.location.href;
   const dispatch: AppDispatch = useDispatch();
+  // const client = 'YsJl8gazQ52xItqGTGOffQ';
+  // const secret = 'LCSeTxp8mvTwynThqCUHihu396MSkQ';
+  const encoded = 'WXNKbDhnYXpRNTJ4SXRxR1RHT2ZmUTpMQ1NlVHhwOG12VHd5blRocUNVSGlodTM5Nk1Ta1E=';
+
   useEffect(() => {
     if (query.indexOf('error') !== -1 || query === '') {
       navigate('/');
@@ -20,7 +24,8 @@ export default function AuthenticationPage() {
         // mode: 'cors',
         // credentials: 'same-origin',
         headers: {
-          Authorization: 'Basic YsJl8gazQ52xItqGTGOffQ:LCSeTxp8mvTwynThqCUHihu396MSkQ',
+          authorization: `Basic ${encoded}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: JSON.stringify(cred),
       })
@@ -35,7 +40,7 @@ export default function AuthenticationPage() {
           navigate('/');
         });
     }
-  }, [query, navigate, uri, dispatch]);
+  }, [query, navigate, uri, dispatch, encoded]);
 
   return <div>AuthenticationPage</div>;
 }
