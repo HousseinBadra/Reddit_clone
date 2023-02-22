@@ -65,8 +65,7 @@ export default function PrimarySearchAppBar() {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const auth = useSelector((state: RootState) => state.auth);
 
-  const secret = 'YsJl8gazQ52xItqGTGOffQ';
-  const URI = 'http://localhost:5173/Authentication';
+  const { VITE_SECRET, VITE_URI } = import.meta.env;
   const scopeArray: string[] = ['account'];
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -171,7 +170,7 @@ export default function PrimarySearchAppBar() {
           {!auth.authenticated ? (
             <Box sx={{ display: { xs: 'flex', md: 'flex' } }}>
               <a
-                href={`https://www.reddit.com/api/v1/authorize?client_id=${secret}&response_type=code&state=${uuidv4()}&redirect_uri=${URI}&duration=permanent&scope=${scopeArray.join(
+                href={`https://www.reddit.com/api/v1/authorize?client_id=${VITE_SECRET}&response_type=code&state=${uuidv4()}&redirect_uri=${VITE_URI}&duration=permanent&scope=${scopeArray.join(
                   ' ',
                 )}`}
               >
