@@ -7,15 +7,13 @@ import { setAuth } from '../features/auth/auth';
 
 export default function useGetToken(): void {
   const navigate = useNavigate();
-  const query = window.location.search;
   const dispatch: AppDispatch = useDispatch();
 
   const { VITE_ENCODED, VITE_URI } = import.meta.env;
 
   useEffect(() => {
-    if (query.indexOf('error') !== -1 || query === '') {
-      navigate('/');
-    } else {
+    const query = window.location.search;
+    if (query.indexOf('error') === -1 && query !== '') {
       const code: string = query.split('&')[1].split('=')[1];
       const { VITE_ACCESS_TOKEN_URL } = import.meta.env;
 
@@ -38,12 +36,8 @@ export default function useGetToken(): void {
                 access_token: r.data.access_token,
               }),
             );
+            navigate('/');
           }
-          navigate('/');
-        })
-        .catch((err) => {
-          navigate('/');
-          console.log(err);
         });
     }
   });

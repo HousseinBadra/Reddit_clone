@@ -10,12 +10,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import LoginIcon from '@mui/icons-material/Login';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { useSelector } from 'react-redux/es/exports';
-import { RootState } from '../../store';
-import { uuidv4 } from '../../utils/uuid';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -63,10 +59,6 @@ export default function PrimarySearchAppBar() {
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-  const auth = useSelector((state: RootState) => state.auth);
-
-  const { VITE_SECRET, VITE_URI } = import.meta.env;
-  const scopeArray: string[] = ['account'];
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -167,54 +159,31 @@ export default function PrimarySearchAppBar() {
             <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
-          {!auth.authenticated ? (
-            <Box sx={{ display: { xs: 'flex', md: 'flex' } }}>
-              <a
-                href={`https://www.reddit.com/api/v1/authorize?client_id=${VITE_SECRET}&response_type=code&state=${uuidv4()}&redirect_uri=${VITE_URI}&duration=permanent&scope=${scopeArray.join(
-                  ' ',
-                )}`}
-              >
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  color="inherit"
-                >
-                  <LoginIcon />
-                </IconButton>
-              </a>
-            </Box>
-          ) : (
-            <>
-              <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-              </Box>
-              <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                <IconButton
-                  size="large"
-                  aria-label="show more"
-                  aria-controls={mobileMenuId}
-                  aria-haspopup="true"
-                  onClick={handleMobileMenuOpen}
-                  color="inherit"
-                >
-                  <MoreIcon />
-                </IconButton>
-              </Box>
-            </>
-          )}
+          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+            <IconButton
+              size="large"
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+          </Box>
+          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="show more"
+              aria-controls={mobileMenuId}
+              aria-haspopup="true"
+              onClick={handleMobileMenuOpen}
+              color="inherit"
+            >
+              <MoreIcon />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
