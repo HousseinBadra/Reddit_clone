@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '@mui/material';
 import useGetToken from '../../hooks/useGetToken';
 import './AuthenticationPAge.scss';
 import { uuidv4 } from '../../utils/uuid';
@@ -9,13 +10,14 @@ export default function AuthenticationPage() {
   const scopeArray: string[] = ['account'];
   return (
     <div className="AuthenticationPage">
-      <a
+      <Button
+        variant="contained"
         href={`https://www.reddit.com/api/v1/authorize?client_id=${VITE_SECRET}&response_type=code&state=${uuidv4()}&redirect_uri=${VITE_URI}&duration=permanent&scope=${scopeArray.join(
           ' ',
         )}`}
       >
-        Authentication Page
-      </a>
+        Sign in
+      </Button>
     </div>
   );
 }
