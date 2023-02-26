@@ -49,4 +49,4 @@ const authSlice = createSlice({
 
 export default authSlice;
 
-export const { setAuth } = authSlice.actions;
+export const { setAuth, signout } = authSlice.actions;
