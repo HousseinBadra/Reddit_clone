@@ -14,6 +14,13 @@ export function getSpeceficFeed(access_token: string, subreddit: string, type: s
   });
 }
 
+export function getSubreddits(access_token: string) {
+  return axios.get('https://oauth.reddit.com/subreddits/default', {
+    method: 'GET',
+    headers: { Authorization: `bearer ${access_token}` },
+  });
+}
+
 export function getSpeceficSubreddits(access_token: string, type: string) {
   return axios.get(`https://oauth.reddit.com/subreddits/${type}`, {
     method: 'GET',
