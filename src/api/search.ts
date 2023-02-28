@@ -1,8 +1,7 @@
-import axios from 'axios';
+import axiosApiInstance from '../axiosInterceptor';
 
-export function search(access_token: string, q: string) {
-  return axios.get(`https://oauth.reddit.com/search?q=${q}`, {
-    method: 'GET',
-    headers: { Authorization: `bearer ${access_token}` },
+export function search(q: string) {
+  return axiosApiInstance.get(`https://oauth.reddit.com/search?q=${q}`, {
+    headers: { Authorization: `bearer ${localStorage.getItem('access_token') || ''}` },
   });
 }

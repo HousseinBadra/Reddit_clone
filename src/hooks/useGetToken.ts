@@ -30,12 +30,9 @@ export default function useGetToken(): void {
         )
         .then((r) => {
           if (r.data.access_token) {
-            dispatch(
-              setAuth({
-                refresh_token: r.data.refresh_token,
-                access_token: r.data.access_token,
-              }),
-            );
+            dispatch(setAuth());
+            localStorage.setItem('access_token', r.data.access_token);
+            localStorage.setItem('refresh_token', r.data.refresh_token);
             navigate('/');
           }
         });
