@@ -2,7 +2,7 @@ import axiosApiInstance from '../axiosInterceptor';
 
 export function getFeed() {
   return axiosApiInstance.get('https://oauth.reddit.com/best?after=Link&limit=50', {
-    headers: { Authorization: `bearer ${localStorage.getItem('access_token') || ''}}` },
+    headers: { Authorization: `bearer ${localStorage.getItem('access_token') || ''}` },
   });
 }
 

@@ -22,7 +22,7 @@ axiosApiInstance.interceptors.response.use(
     if (error.response.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
       const rs = await refreshToken(localStorage.getItem('refresh_token') || '');
-      axios.defaults.headers.common.Authorization = `Bearer +${rs.data.access_token || ''}`;
+      axios.defaults.headers.common.Authorization = `Bearer ${rs.data.access_token || ''}`;
       return axiosApiInstance(originalRequest);
     }
     return Promise.reject(error);
