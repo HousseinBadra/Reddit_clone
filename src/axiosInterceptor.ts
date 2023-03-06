@@ -5,6 +5,7 @@ const axiosApiInstance = axios.create();
 
 axiosApiInstance.interceptors.request.use(
   (config) => {
+    // config.headers.Authorization = `bearer ${localStorage.getItem('access_token') || ''}`;
     return config;
   },
   (error) => {
@@ -21,8 +22,7 @@ axiosApiInstance.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const rs = await refreshToken(localStorage.getItem('refresh_token') || '');
-      axios.defaults.headers.common.Authorization = `Bearer ${rs.data.access_token || ''}`;
+      await refreshToken(localStorage.getItem('refresh_token') || '');
       return axiosApiInstance(originalRequest);
     }
     return Promise.reject(error);

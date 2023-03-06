@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getFeed, getSubreddits } from '../../api/feed';
+import { getFeed, getSubreddits, followSubreddit } from '../../api/feed';
 
-type Link = {
+export type Link = {
   subreddit: string;
   author: string;
   author_fullname: string;
@@ -17,12 +17,13 @@ type Link = {
   title: string;
   url: string;
   saved: boolean;
+  likes: null | boolean;
 };
 
-type Community = {
+export type Community = {
   banner_background_color: string;
   banner_background_image: string;
-  accept_followers: boolean;
+  acceptFollowers: boolean;
   community_icon: string;
   created_utc: number;
   advertiser_category: string;
@@ -33,12 +34,19 @@ type Community = {
   subscribers: number;
   title: string;
   url: string;
-  user_is_subscriber: boolean;
+  userIsSubscriber: boolean;
 };
 
 type FeedSliceInintialState = {
   Links: Link[];
   Communities: Community[];
+};
+
+type ThunkApiType = {
+  action: string;
+  action_source: string;
+  skip_initial_defaults: boolean;
+  sr_name: string;
 };
 
 const initialState = { Links: [], Communities: [] } as FeedSliceInintialState;
@@ -53,6 +61,19 @@ export const fetchSubreddits = createAsyncThunk('feed/Subreddits', async () => {
   return response?.data?.data;
 });
 
+export const SubscribeSubreddit = createAsyncThunk(
+  'feed/Subscribe',
+  async (thunkAPI: ThunkApiType) => {
+    const response = await followSubreddit(
+      thunkAPI.action,
+      thunkAPI.action_source,
+      thunkAPI.skip_initial_defaults,
+      thunkAPI.sr_name,
+    );
+    return response;
+  },
+);
+
 const FeedSlice = createSlice({
   name: 'feed',
   initialState,
@@ -62,8 +83,8 @@ const FeedSlice = createSlice({
     builder.addCase(fetchFeed.fulfilled, (state, action) => {
       const refinedFeed = action.payload.children.map((elem: any) => {
         return {
-          subreddit: elem.data.subreddit,
-          author: elem.data.author,
+          subreddit: elem?.data?.subreddit,
+          author: elem?.data?.author,
           author_fullname: elem.data.author_fullname,
           created_utc: elem.data.created_utc,
           downs: elem.data.downs,
@@ -77,6 +98,7 @@ const FeedSlice = createSlice({
           title: elem.data.title,
           url: elem.data.url,
           saved: elem.data.saved,
+          likes: elem.data.likes,
         };
       });
       state.Links = [...refinedFeed];
@@ -101,6 +123,15 @@ const FeedSlice = createSlice({
         };
       });
       state.Communities = [...refinedFeed];
+    });
+    builder.addCase(SubscribeSubreddit.fulfilled, (state, action) => {
+      console.log(action.payload);
+      state.Communities = state.Communities.map((elem) => {
+        // if (elem.name === action.payload) {
+        //   return { ...elem, userIsSubscriber: !elem.userIsSubscriber };
+        // }
+        return { ...elem };
+      });
     });
   },
 });
