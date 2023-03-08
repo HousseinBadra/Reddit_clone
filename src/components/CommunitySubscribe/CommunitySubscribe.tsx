@@ -53,20 +53,19 @@ export default function CommunitySubscribe(props: Community) {
                 SubscribeSubreddit({
                   action: 'unsub',
                   action_source: 'o',
-                  skip_initial_defaults: true,
+                  skip_initial_defaults: false,
                   sr_name: name,
                 }),
               );
             }}
-            disabled
           >
             {' '}
             Following{' '}
           </Button>
         )}
         {!acceptFollowers && (
-          <Button aria-label="previous" variant="contained">
-            Does not accept followers
+          <Button aria-label="previous" variant="contained" disabled>
+            Follow
           </Button>
         )}
       </div>

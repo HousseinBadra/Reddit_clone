@@ -53,3 +53,33 @@ export function getMySubreddits() {
     headers: { Authorization: `bearer ${localStorage.getItem('access_token') || ''}` },
   });
 }
+
+export function vote(id: string, direction: number) {
+  return axiosApiInstance.post(
+    `https://oauth.reddit.com//api/vote?dir=${direction}&id=${id}&rank=2`,
+    {},
+    {
+      headers: { Authorization: `bearer ${localStorage.getItem('access_token') || ''}` },
+    },
+  );
+}
+
+export function save(id: string) {
+  return axiosApiInstance.post(
+    `https://oauth.reddit.com/api/save?category=t3&id=${id}`,
+    {},
+    {
+      headers: { Authorization: `bearer ${localStorage.getItem('access_token') || ''}` },
+    },
+  );
+}
+
+export function unsave(id: string) {
+  return axiosApiInstance.post(
+    `https://oauth.reddit.com/api/unsave?id=${id}`,
+    {},
+    {
+      headers: { Authorization: `bearer ${localStorage.getItem('access_token') || ''}` },
+    },
+  );
+}

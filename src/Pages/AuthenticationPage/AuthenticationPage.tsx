@@ -7,7 +7,7 @@ import { uuidv4 } from '../../utils/uuid';
 export default function AuthenticationPage() {
   useGetToken();
   const { VITE_SECRET, VITE_URI } = import.meta.env;
-  const scopeArray: string[] = ['identity', 'read', 'subscribe', 'mysubreddits'];
+  const scopeArray: string[] = ['identity', 'read', 'subscribe', 'mysubreddits', 'vote', 'save'];
   return (
     <div className="AuthenticationPage">
       <Button
