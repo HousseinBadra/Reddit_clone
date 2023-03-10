@@ -1,9 +1,9 @@
-import Switch from './routes/Switch';
+import AppRoutes from './routes/AppRoutes';
 
 function App() {
   return (
     <div className="App">
-      <Switch />
+      <AppRoutes />
     </div>
   );
 }
