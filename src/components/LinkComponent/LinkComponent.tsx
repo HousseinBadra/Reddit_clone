@@ -5,6 +5,7 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
@@ -47,10 +48,10 @@ export default function LinkComponent(props: Link) {
         </a>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton>
+        <Button>
           <TrendingUpIcon />
           {score}
-        </IconButton>
+        </Button>
         <IconButton
           onClick={() => {
             dispatch(VoteLink({ name, dir: likes ? 0 : 1 }));

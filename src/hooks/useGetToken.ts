@@ -28,11 +28,11 @@ export default function useGetToken(): void {
             },
           },
         )
-        .then((r) => {
+        .then(async (r) => {
           if (r.data.access_token) {
+            await localStorage.setItem('access_token', r.data.access_token);
+            await localStorage.setItem('refresh_token', r.data.refresh_token);
             dispatch(setAuth());
-            localStorage.setItem('access_token', r.data.access_token);
-            localStorage.setItem('refresh_token', r.data.refresh_token);
             navigate('/');
           }
         });

@@ -63,12 +63,14 @@ const initialState = { Links: [], Communities: [] } as FeedSliceInintialState;
 
 export const fetchFeed = createAsyncThunk('feed/Feed', async () => {
   const response = await getFeed();
-  return response?.data?.data;
+  if (response.status === 200) return response.data.data.children;
+  return [];
 });
 
 export const fetchSubreddits = createAsyncThunk('feed/Subreddits', async () => {
   const response = await getSubreddits();
-  return response?.data?.data;
+  if (response.status === 200) return response.data.data.children;
+  return [];
 });
 
 export const SubscribeSubreddit = createAsyncThunk(
@@ -106,7 +108,7 @@ const FeedSlice = createSlice({
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(fetchFeed.fulfilled, (state, action) => {
-      const refinedFeed = action.payload.children.map((elem: any) => {
+      const refinedFeed = action.payload.map((elem: any) => {
         return {
           subreddit: elem?.data?.subreddit,
           author: elem?.data?.author,
@@ -130,7 +132,7 @@ const FeedSlice = createSlice({
       state.Links = [...refinedFeed];
     });
     builder.addCase(fetchSubreddits.fulfilled, (state, action) => {
-      const refinedFeed = action.payload.children.map((elem: any) => {
+      const refinedFeed = action.payload.map((elem: any) => {
         return {
           banner_background_color: elem.data.banner_background_color,
           banner_background_image: elem.data.banner_background_image,
