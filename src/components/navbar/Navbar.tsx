@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { signout } from '../../features/auth/auth';
+import { setQuery } from '../../features/search/seachSlice';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -64,6 +65,23 @@ export default function PrimarySearchAppBar() {
   // const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const dispatch: AppDispatch = useDispatch();
+  const searchRef = React.useRef<HTMLFormElement>();
+
+  const handleSearch = React.useCallback(
+    (event: KeyboardEvent): void => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        dispatch(setQuery(searchRef?.current?.value));
+      }
+    },
+    [dispatch],
+  );
+
+  React.useEffect(() => {
+    const cleanupRef = searchRef?.current;
+    searchRef?.current?.addEventListener('keypress', handleSearch);
+    return () => cleanupRef?.removeEventListener('keypress', handleSearch);
+  }, [handleSearch]);
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -152,7 +170,11 @@ export default function PrimarySearchAppBar() {
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
-            <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ 'aria-label': 'search' }}
+              inputRef={searchRef}
+            />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
