@@ -23,7 +23,7 @@ export default function LinkComponent(props: Link) {
     props;
   const dispatch = useDispatch<AppDispatch>();
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card style={{ width: '100%' }}>
       <CardHeader
         avatar={<Avatar sx={{ bgcolor: red[500] }}>{author.toUpperCase()[0]}</Avatar>}
         title={`posted by user /u${author} at /r/${subreddit}`}

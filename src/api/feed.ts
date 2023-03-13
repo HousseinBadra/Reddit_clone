@@ -7,7 +7,7 @@ import axiosApiInstance from '../axiosInterceptor';
 // }
 
 export function getFeed() {
-  return axiosApiInstance.get('https://oauth.reddit.com/best?after=Link&limit=50');
+  return axiosApiInstance.get('https://oauth.reddit.com/best?after=Link&limit=100');
 }
 
 export function getSpeceficFeed(subreddit: string, type: string) {
@@ -17,7 +17,7 @@ export function getSpeceficFeed(subreddit: string, type: string) {
 }
 
 export function getSubreddits() {
-  return axiosApiInstance.get('https://oauth.reddit.com/subreddits/default');
+  return axiosApiInstance.get('https://oauth.reddit.com/subreddits/default?limit=5');
 }
 
 export function getSpeceficSubreddits(type: string) {
