@@ -1,7 +1,19 @@
 .CommunityStack {
-  height: max(500px, 70vh);
-  border: 1px solid;
-  overflow-y: scroll;
+  padding: 5px;
+  gap: 5px;
+  position: sticky;
+  top: 0;
+}
+
+.CommunityStackMobile {
+  padding: 5px;
+  gap: 5px;
+  max-width: 100%;
+  overflow-x: scroll;
+}
+
+.mainGrid {
+  margin: 0 auto !important;
 }
 
 .CommunityStack::-webkit-scrollbar {
@@ -15,4 +27,8 @@
 .CommunityStack::-webkit-scrollbar-thumb {
   background-color: darkgrey;
   outline: 1px solid slategrey;
+}
+
+.b-1 {
+  background: red;
 }

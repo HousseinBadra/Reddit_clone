@@ -1,13 +1,11 @@
 import axios from 'axios';
 import refreshToken from './api/refresToken';
 
-const axiosApiInstance = axios.create({
-  headers: { Authorization: `bearer ${localStorage.getItem('access_token') || ''}` },
-});
+const axiosApiInstance = axios.create();
 
 axiosApiInstance.interceptors.request.use(
   (config) => {
-    // config.headers.Authorization = `bearer ${localStorage.getItem('access_token') || ''}`;
+    config.headers.Authorization = `bearer ${localStorage.getItem('access_token') || ''}`;
     return config;
   },
   (error) => {

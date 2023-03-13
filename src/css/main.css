@@ -1,9 +1,4 @@
-* {
-  padding: 0;
+body {
   margin: 0;
-  box-sizing: border-box;
-}
-
-html {
-  min-height: 100vh;
+  padding: 0;
 }
