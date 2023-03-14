@@ -1,5 +1,8 @@
 import React from 'react';
 import { Card, Button } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store';
+import { onFollowClicked } from '../../features/feed/feedSlice';
 import './CommunitySubscribe.css';
 
 type CommunitySubscribeProps = {
@@ -8,10 +11,13 @@ type CommunitySubscribeProps = {
   title: string;
   userIsSubscriber: boolean;
   isXs: boolean;
+  followPending: boolean;
+  name: string;
 };
 
 export default function CommunitySubscribe(props: CommunitySubscribeProps) {
-  const { title, userIsSubscriber, acceptFollowers, onFollow, isXs } = props;
+  const { title, userIsSubscriber, acceptFollowers, onFollow, isXs, followPending, name } = props;
+  const dispatch = useDispatch<AppDispatch>();
 
   return (
     <div>
@@ -41,9 +47,11 @@ export default function CommunitySubscribe(props: CommunitySubscribeProps) {
           >
             {acceptFollowers && (
               <Button
+                disabled={followPending}
                 aria-label="previous"
                 variant="contained"
                 onClick={() => {
+                  dispatch(onFollowClicked(name));
                   onFollow();
                 }}
               >
@@ -91,9 +99,11 @@ export default function CommunitySubscribe(props: CommunitySubscribeProps) {
           >
             {acceptFollowers && (
               <Button
+                disabled={followPending}
                 aria-label="previous"
                 variant="contained"
                 onClick={() => {
+                  dispatch(onFollowClicked(name));
                   onFollow();
                 }}
               >

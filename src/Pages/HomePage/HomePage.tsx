@@ -1,6 +1,6 @@
 import * as React from 'react';
 import TablePagination from '@mui/material/TablePagination';
-import { Grid, Stack } from '@mui/material';
+import { Grid, Stack, CircularProgress } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
 import { fetchFeed, fetchSubreddits, SubscribeSubreddit } from '../../features/feed/feedSlice';
@@ -10,7 +10,7 @@ import './HomePage.css';
 
 export default function HomePage() {
   const dispatch = useDispatch<AppDispatch>();
-  const { Links, Communities } = useSelector((state: RootState) => state.feed);
+  const { Links, Communities, fetchLinks } = useSelector((state: RootState) => state.feed);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -63,25 +63,31 @@ export default function HomePage() {
       sx={{ flexDirection: { xs: 'column-reverse', sm: 'row' } }}
     >
       <Grid item xs={12} sm={7} justifyContent="center">
-        <Stack spacing={2}>
-          {Links.slice(
-            page * rowsPerPage,
-            page * rowsPerPage + rowsPerPage <= Links.length
-              ? page * rowsPerPage + rowsPerPage
-              : Links.length,
-          ).map((elem) => {
-            return <LinkComponent key={elem.id} {...elem} />;
-          })}
-          <TablePagination
-            style={{ margin: '0 auto' }}
-            component="div"
-            count={Links.length}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Stack>
+        {fetchLinks ? (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <CircularProgress />{' '}
+          </div>
+        ) : (
+          <Stack spacing={2}>
+            {Links.slice(
+              page * rowsPerPage,
+              page * rowsPerPage + rowsPerPage <= Links.length
+                ? page * rowsPerPage + rowsPerPage
+                : Links.length,
+            ).map((elem) => {
+              return <LinkComponent key={elem.id} {...elem} />;
+            })}
+            <TablePagination
+              style={{ margin: '0 auto' }}
+              component="div"
+              count={Links.length}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Stack>
+        )}
       </Grid>
       <Grid item xs={12} sm={5} justifyContent="center">
         <Stack
@@ -97,6 +103,8 @@ export default function HomePage() {
                 acceptFollowers={elem.acceptFollowers}
                 userIsSubscriber={elem.userIsSubscriber}
                 isXs={false}
+                name={elem.name}
+                followPending={elem.followPending}
                 onFollow={() => {
                   onFollowButtonClicked(elem.name, elem.userIsSubscriber);
                 }}
@@ -117,6 +125,8 @@ export default function HomePage() {
                 acceptFollowers={elem.acceptFollowers}
                 userIsSubscriber={elem.userIsSubscriber}
                 isXs
+                name={elem.name}
+                followPending={elem.followPending}
                 onFollow={() => {
                   onFollowButtonClicked(elem.name, elem.userIsSubscriber);
                 }}

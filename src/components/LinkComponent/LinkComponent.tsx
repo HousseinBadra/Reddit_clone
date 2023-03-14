@@ -16,11 +16,30 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { useDispatch } from 'react-redux';
 import formatDate from '../../utils/date';
 import { AppDispatch } from '../../store';
-import { Link, SaveLink, UnSaveLink, VoteLink } from '../../features/feed/feedSlice';
+import {
+  Link,
+  SaveLink,
+  UnSaveLink,
+  VoteLink,
+  onVoteClicked,
+  onSaveClicked,
+} from '../../features/feed/feedSlice';
 
 export default function LinkComponent(props: Link) {
-  const { author, subreddit, createdUtc, title, url, saved, likes, name, score, numComments } =
-    props;
+  const {
+    author,
+    subreddit,
+    createdUtc,
+    title,
+    url,
+    saved,
+    likes,
+    name,
+    score,
+    numComments,
+    savePending,
+    votePending,
+  } = props;
   const dispatch = useDispatch<AppDispatch>();
   return (
     <Card style={{ width: '100%' }}>
@@ -53,21 +72,27 @@ export default function LinkComponent(props: Link) {
           {score}
         </Button>
         <IconButton
+          disabled={votePending}
           onClick={() => {
+            dispatch(onVoteClicked(name));
             dispatch(VoteLink({ name, dir: likes ? 0 : 1 }));
           }}
         >
           <FileUploadIcon style={{ color: likes ? 'orange' : 'black' }} />
         </IconButton>
         <IconButton
+          disabled={votePending}
           onClick={() => {
+            dispatch(onVoteClicked(name));
             dispatch(VoteLink({ name, dir: likes === false ? 0 : -1 }));
           }}
         >
           <FileDownloadIcon style={{ color: likes === false ? 'blue' : 'black' }} />
         </IconButton>
         <IconButton
+          disabled={savePending}
           onClick={() => {
+            dispatch(onSaveClicked(name));
             if (saved) {
               dispatch(UnSaveLink({ name }));
               return;
@@ -77,9 +102,9 @@ export default function LinkComponent(props: Link) {
         >
           <LibraryAddIcon style={{ color: saved ? 'green' : 'black' }} />
         </IconButton>
-        <IconButton>
+        <Button>
           <ChatBubbleOutlineIcon /> {numComments}
-        </IconButton>
+        </Button>
       </CardActions>
     </Card>
   );

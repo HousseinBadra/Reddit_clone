@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { getFeed, getSubreddits, followSubreddit, save, unsave, vote } from '../../api/feed';
 
 export type Link = {
@@ -19,6 +19,8 @@ export type Link = {
   saved: boolean;
   likes: null | boolean;
   name: string;
+  votePending: boolean;
+  savePending: boolean;
 };
 
 export type Community = {
@@ -36,11 +38,14 @@ export type Community = {
   title: string;
   url: string;
   userIsSubscriber: boolean;
+  followPending: boolean;
 };
 
 type FeedSliceInintialState = {
   Links: Link[];
   Communities: Community[];
+  fetchLinks: boolean;
+  fetchSubreddits: boolean;
 };
 
 type ThunkApiTypeSubscribeSubreddit = {
@@ -59,7 +64,12 @@ type ThunkApiTypeLike = {
   dir: number;
 };
 
-const initialState = { Links: [], Communities: [] } as FeedSliceInintialState;
+const initialState = {
+  Links: [],
+  Communities: [],
+  fetchLinks: false,
+  fetchSubreddits: false,
+} as FeedSliceInintialState;
 
 export const fetchFeed = createAsyncThunk('feed/Feed', async () => {
   const response = await getFeed();
@@ -104,9 +114,31 @@ export const VoteLink = createAsyncThunk('feed/Vote', async (thunkAPI: ThunkApiT
 const FeedSlice = createSlice({
   name: 'feed',
   initialState,
-  reducers: {},
+  reducers: {
+    onFollowClicked: (state, action: PayloadAction<string>) => {
+      state.Communities = state.Communities.map((elem) => {
+        if (elem.name === action.payload) return { ...elem, followPending: true };
+        return elem;
+      });
+    },
+    onVoteClicked: (state, action: PayloadAction<string>) => {
+      state.Links = state.Links.map((elem) => {
+        if (elem.name === action.payload) return { ...elem, votePending: true };
+        return elem;
+      });
+    },
+    onSaveClicked: (state, action: PayloadAction<string>) => {
+      state.Links = state.Links.map((elem) => {
+        if (elem.name === action.payload) return { ...elem, savePending: true };
+        return elem;
+      });
+    },
+  },
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state as needed
+    builder.addCase(fetchFeed.pending, (state) => {
+      state.fetchLinks = true;
+    });
     builder.addCase(fetchFeed.fulfilled, (state, action) => {
       const refinedFeed = action.payload.map((elem: any) => {
         return {
@@ -127,9 +159,18 @@ const FeedSlice = createSlice({
           saved: elem.data.saved,
           likes: elem.data.likes,
           name: elem.data.name,
+          votePending: false,
+          savePending: false,
         };
       });
       state.Links = [...refinedFeed];
+      state.fetchLinks = false;
+    });
+    builder.addCase(fetchFeed.rejected, (state) => {
+      state.fetchLinks = false;
+    });
+    builder.addCase(fetchSubreddits.pending, (state) => {
+      state.fetchSubreddits = true;
     });
     builder.addCase(fetchSubreddits.fulfilled, (state, action) => {
       const refinedFeed = action.payload.map((elem: any) => {
@@ -148,14 +189,19 @@ const FeedSlice = createSlice({
           title: elem.data.title,
           url: elem.data.url,
           userIsSubscriber: elem.data.user_is_subscriber,
+          followPending: false,
         };
       });
       state.Communities = [...refinedFeed];
+      state.fetchSubreddits = false;
+    });
+    builder.addCase(fetchSubreddits.rejected, (state) => {
+      state.fetchSubreddits = false;
     });
     builder.addCase(SubscribeSubreddit.fulfilled, (state, action) => {
       state.Communities = state.Communities.map((elem) => {
         if (elem.name === action.payload) {
-          return { ...elem, userIsSubscriber: !elem.userIsSubscriber };
+          return { ...elem, userIsSubscriber: !elem.userIsSubscriber, followPending: false };
         }
         return { ...elem };
       });
@@ -163,7 +209,7 @@ const FeedSlice = createSlice({
     builder.addCase(SaveLink.fulfilled, (state, action) => {
       state.Links = state.Links.map((elem) => {
         if (elem.name === action.payload) {
-          return { ...elem, saved: true };
+          return { ...elem, saved: true, savePending: false };
         }
         return { ...elem };
       });
@@ -171,7 +217,7 @@ const FeedSlice = createSlice({
     builder.addCase(UnSaveLink.fulfilled, (state, action) => {
       state.Links = state.Links.map((elem) => {
         if (elem.name === action.payload) {
-          return { ...elem, saved: false };
+          return { ...elem, saved: false, savePending: false };
         }
         return { ...elem };
       });
@@ -180,9 +226,15 @@ const FeedSlice = createSlice({
       state.Links = state.Links.map((elem) => {
         if (elem.name === action.payload.name) {
           if (!action.payload.dir)
-            return { ...elem, likes: null, score: elem.score + (elem.likes ? -1 : 1) };
+            return {
+              ...elem,
+              votePending: false,
+              likes: null,
+              score: elem.score + (elem.likes ? -1 : 1),
+            };
           return {
             ...elem,
+            votePending: false,
             likes: action.payload.dir === 1,
             score:
               elem.score +
@@ -198,3 +250,5 @@ const FeedSlice = createSlice({
 });
 
 export default FeedSlice;
+
+export const { onFollowClicked, onSaveClicked, onVoteClicked } = FeedSlice.actions;

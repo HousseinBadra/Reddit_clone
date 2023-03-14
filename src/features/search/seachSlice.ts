@@ -23,4 +23,4 @@ const searchSlice = createSlice({
 
 export default searchSlice;
 
-export const { setFilter, setQuery } = searchSlice.actions;
+export const { setQuery, setFilter } = searchSlice.actions;
