@@ -1,6 +1,8 @@
 export default function formatDate(date: number): string {
-  const day: number = Math.floor(date / 3600 / 24) % 30;
-  const month: number = Math.floor(date / 3600 / 24 / 30) % 12;
-  const year: number = Math.floor(date / 3600 / 24 / 365.25) + 1970;
+  const d = new Date(date * 1000);
+
+  const day: number = d.getDay();
+  const month: number = d.getMonth();
+  const year: number = d.getFullYear();
   return `${day}/${month}/${year}`;
 }

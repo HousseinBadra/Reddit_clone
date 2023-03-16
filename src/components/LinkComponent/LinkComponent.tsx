@@ -15,6 +15,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { useDispatch } from 'react-redux';
 import formatDate from '../../utils/date';
+import formatNumber from '../../utils/number';
 import { AppDispatch } from '../../store';
 import {
   Link,
@@ -69,7 +70,7 @@ export default function LinkComponent(props: Link) {
       <CardActions disableSpacing>
         <Button>
           <TrendingUpIcon />
-          {score}
+          {formatNumber(score)}
         </Button>
         <IconButton
           disabled={votePending}
@@ -103,7 +104,7 @@ export default function LinkComponent(props: Link) {
           <LibraryAddIcon style={{ color: saved ? 'green' : 'black' }} />
         </IconButton>
         <Button>
-          <ChatBubbleOutlineIcon /> {numComments}
+          <ChatBubbleOutlineIcon /> {formatNumber(numComments)}
         </Button>
       </CardActions>
     </Card>
