@@ -5,17 +5,22 @@
   top: 0;
 }
 
-.CommunityStackMobile {
-  padding: 5px;
-  gap: 5px;
-  max-width: 100%;
-  overflow-x: scroll;
-}
-
 .mainGrid {
   margin: 0 auto !important;
 }
 
 svg {
   font-size: 18px !important;
+}
+
+@media (max-width: 600px) {
+  .CommunityStack {
+    padding: 0 5px;
+    gap: 5px;
+    max-width: 90%;
+    margin: 0 auto;
+    overflow-x: scroll;
+    justify-content: center;
+    align-items: center;
+  }
 }

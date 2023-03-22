@@ -18,7 +18,7 @@ export default function SearchLink(props: Link) {
   const { author, subreddit, createdUtc, title, url, score, numComments, award } = props;
 
   return (
-    <Card style={{ width: '100%' }}>
+    <Card style={{ width: '90%', margin: '0 auto' }}>
       <CardHeader
         avatar={<Avatar sx={{ bgcolor: red[500] }}>{author.toUpperCase()[0]}</Avatar>}
         title={`posted by user /u${author} at /r/${subreddit}`}

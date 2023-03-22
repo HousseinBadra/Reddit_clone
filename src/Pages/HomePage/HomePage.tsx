@@ -3,7 +3,12 @@ import TablePagination from '@mui/material/TablePagination';
 import { Grid, Stack, CircularProgress } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
-import { fetchFeed, fetchSubreddits, SubscribeSubreddit } from '../../features/feed/feedSlice';
+import {
+  fetchFeed,
+  fetchSubreddits,
+  SubscribeSubreddit,
+  onFollowClicked,
+} from '../../features/feed/feedSlice';
 import CommunitySubscribe from '../../components/CommunitySubscribe/CommunitySubscribe';
 import LinkComponent from '../../components/LinkComponent/LinkComponent';
 import './HomePage.css';
@@ -13,17 +18,16 @@ export default function HomePage() {
   const { Links, Communities, fetchLinks } = useSelector((state: RootState) => state.feed);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     dispatch(fetchFeed());
-  }, [dispatch]);
-
-  React.useEffect(() => {
     dispatch(fetchSubreddits());
   }, [dispatch]);
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
+    scrollRef.current?.scrollTo(0, 0);
   };
 
   const handleChangeRowsPerPage = (
@@ -31,9 +35,11 @@ export default function HomePage() {
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    scrollRef.current?.scrollTo(0, 0);
   };
 
   function onFollowButtonClicked(name: string, userIsSubscriber: boolean) {
+    dispatch(onFollowClicked(name));
     if (userIsSubscriber) {
       return dispatch(
         SubscribeSubreddit({
@@ -62,23 +68,32 @@ export default function HomePage() {
       className="mainGrid"
       sx={{ flexDirection: { xs: 'column-reverse', sm: 'row' } }}
     >
-      <Grid item xs={12} sm={7} justifyContent="center">
+      <Grid item xs={12} sm={7} justifyContent="center" alignItems="center">
         {fetchLinks ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <CircularProgress />{' '}
           </div>
         ) : (
-          <Stack spacing={2}>
-            {Links.slice(
-              page * rowsPerPage,
-              page * rowsPerPage + rowsPerPage <= Links.length
-                ? page * rowsPerPage + rowsPerPage
-                : Links.length,
-            ).map((elem) => {
-              return <LinkComponent key={elem.id} {...elem} />;
-            })}
+          <div>
+            <div style={{ maxHeight: '80vh', overflowY: 'scroll' }} ref={scrollRef}>
+              <Stack spacing={2} gap={1}>
+                {Links.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage <= Links.length
+                    ? page * rowsPerPage + rowsPerPage
+                    : Links.length,
+                ).map((elem) => {
+                  return <LinkComponent key={elem.id} {...elem} />;
+                })}
+              </Stack>
+            </div>
             <TablePagination
-              style={{ margin: '0 auto' }}
+              style={{
+                margin: '0 auto',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
               component="div"
               count={Links.length}
               page={page}
@@ -86,14 +101,13 @@ export default function HomePage() {
               rowsPerPage={rowsPerPage}
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
-          </Stack>
+          </div>
         )}
       </Grid>
-      <Grid item xs={12} sm={5} justifyContent="center">
+      <Grid item xs={12} sm={5} justifyContent="center" alignItems="center">
         <Stack
-          spacing={2}
           className="CommunityStack"
-          sx={{ display: { xs: 'none', sm: 'flex' }, flexDirection: { xs: 'row', sm: 'column' } }}
+          sx={{ display: { xs: 'flex', sm: 'flex' }, flexDirection: { xs: 'row', sm: 'column' } }}
         >
           {Communities.slice(0, 5).map((elem) => {
             return (
@@ -102,30 +116,6 @@ export default function HomePage() {
                 title={elem.title}
                 acceptFollowers={elem.acceptFollowers}
                 userIsSubscriber={elem.userIsSubscriber}
-                isXs={false}
-                name={elem.name}
-                followPending={elem.followPending}
-                onFollow={() => {
-                  onFollowButtonClicked(elem.name, elem.userIsSubscriber);
-                }}
-              />
-            );
-          })}
-        </Stack>
-        <Stack
-          spacing={2}
-          className="CommunityStackMobile"
-          sx={{ display: { xs: 'flex', sm: 'none' }, flexDirection: { xs: 'row', sm: 'column' } }}
-        >
-          {Communities.slice(0, 5).map((elem) => {
-            return (
-              <CommunitySubscribe
-                key={elem.name}
-                title={elem.title}
-                acceptFollowers={elem.acceptFollowers}
-                userIsSubscriber={elem.userIsSubscriber}
-                isXs
-                name={elem.name}
                 followPending={elem.followPending}
                 onFollow={() => {
                   onFollowButtonClicked(elem.name, elem.userIsSubscriber);
