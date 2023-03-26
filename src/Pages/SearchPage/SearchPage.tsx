@@ -1,29 +1,31 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import TablePagination from '@mui/material/TablePagination';
 import { Grid, Stack, CircularProgress } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../store';
 import {
-  fetchFeed,
-  fetchSubreddits,
-  SubscribeSubreddit,
+  searchLinks,
+  searchSubreddits,
+  SubscribeCommunity,
   onFollowClicked,
-} from '../../features/feed/feedSlice';
-import CommunitySubscribe from '../../components/CommunitySubscribe/CommunitySubscribe';
-import LinkComponent from '../../components/LinkComponent/LinkComponent';
-import './HomePage.css';
+} from '../../features/search/seachSlice';
+import { AppDispatch, RootState } from '../../store';
+import SearchCommunity from '../../components/SearchCommunity/SearchCommunity';
+import SearchLink from '../../components/SearchLink/SearchLink';
+import './SearchPage.css';
 
-export default function HomePage() {
+export default function SearchPage() {
   const dispatch = useDispatch<AppDispatch>();
-  const { Links, Communities, fetchLinks } = useSelector((state: RootState) => state.feed);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const { links, communities, filter, query, searchingLinks } = useSelector(
+    (state: RootState) => state.search,
+  );
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
-    dispatch(fetchFeed());
-    dispatch(fetchSubreddits());
-  }, [dispatch]);
+  useEffect(() => {
+    dispatch(searchLinks({ query, filter }));
+    dispatch(searchSubreddits({ query, filter }));
+  }, [query, filter, dispatch]);
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
@@ -42,7 +44,7 @@ export default function HomePage() {
     dispatch(onFollowClicked(name));
     if (userIsSubscriber) {
       return dispatch(
-        SubscribeSubreddit({
+        SubscribeCommunity({
           action: 'unsub',
           action_source: 'o',
           skip_initial_defaults: false,
@@ -51,7 +53,7 @@ export default function HomePage() {
       );
     }
     return dispatch(
-      SubscribeSubreddit({
+      SubscribeCommunity({
         action: 'sub',
         action_source: 'o',
         skip_initial_defaults: true,
@@ -69,7 +71,7 @@ export default function HomePage() {
       sx={{ flexDirection: { xs: 'column-reverse', sm: 'row' } }}
     >
       <Grid item xs={12} sm={7} justifyContent="center" alignItems="center">
-        {fetchLinks ? (
+        {searchingLinks ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <CircularProgress />{' '}
           </div>
@@ -77,14 +79,16 @@ export default function HomePage() {
           <div>
             <div style={{ maxHeight: '80vh', overflowY: 'scroll' }} ref={scrollRef}>
               <Stack spacing={2} gap={1}>
-                {Links.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage <= Links.length
-                    ? page * rowsPerPage + rowsPerPage
-                    : Links.length,
-                ).map((elem) => {
-                  return <LinkComponent key={elem.id} {...elem} />;
-                })}
+                {links
+                  .slice(
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage <= links.length
+                      ? page * rowsPerPage + rowsPerPage
+                      : links.length,
+                  )
+                  .map((elem) => {
+                    return <SearchLink key={elem.id} {...elem} />;
+                  })}
               </Stack>
             </div>
             <TablePagination
@@ -95,7 +99,7 @@ export default function HomePage() {
                 alignItems: 'center',
               }}
               component="div"
-              count={Links.length}
+              count={links.length}
               page={page}
               onPageChange={handleChangePage}
               rowsPerPage={rowsPerPage}
@@ -109,9 +113,9 @@ export default function HomePage() {
           className="CommunityStack"
           sx={{ display: { xs: 'flex', sm: 'flex' }, flexDirection: { xs: 'row', sm: 'column' } }}
         >
-          {Communities.slice(0, 5).map((elem) => {
+          {communities.slice(0, 5).map((elem) => {
             return (
-              <CommunitySubscribe
+              <SearchCommunity
                 key={elem.name}
                 title={elem.title}
                 acceptFollowers={elem.acceptFollowers}

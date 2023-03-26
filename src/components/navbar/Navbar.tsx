@@ -8,12 +8,13 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { Link } from 'react-router-dom';
+import HomeIcon from '@mui/icons-material/Home';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { signout } from '../../features/auth/auth';
@@ -65,15 +66,18 @@ export default function PrimarySearchAppBar() {
   // const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
+  const { pathname } = window.location;
 
   const handleSearch = React.useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>): void => {
       if (event.key === 'Enter') {
         event.preventDefault();
         dispatch(setQuery(event.currentTarget.value));
+        if (event.currentTarget.value) navigate('/search');
       }
     },
-    [dispatch],
+    [dispatch, navigate],
   );
 
   const handleMobileMenuClose = () => {
@@ -145,11 +149,19 @@ export default function PrimarySearchAppBar() {
           <IconButton
             size="large"
             edge="start"
-            color="inherit"
-            aria-label="open drawer"
+            aria-label="Home Page"
             sx={{ mr: 2 }}
+            onClick={() => {
+              if (pathname === '/') return;
+              navigate('/');
+            }}
           >
-            <MenuIcon />
+            {' '}
+            {pathname === '/' ? (
+              <HomeIcon style={{ color: 'white' }} />
+            ) : (
+              <ArrowBackIcon style={{ color: 'white' }} />
+            )}
           </IconButton>
           <Typography
             variant="h6"

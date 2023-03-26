@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Button } from '@mui/material';
-import './CommunitySubscribe.css';
+import './SearchCommunity.css';
 
 type CommunitySubscribeProps = {
   onFollow: () => void;
@@ -10,7 +10,7 @@ type CommunitySubscribeProps = {
   followPending: boolean;
 };
 
-export default function CommunitySubscribe(props: CommunitySubscribeProps) {
+export default function SearchCommunity(props: CommunitySubscribeProps) {
   const { title, userIsSubscriber, acceptFollowers, onFollow, followPending } = props;
 
   return (

@@ -21,6 +21,7 @@ export type Link = {
   name: string;
   votePending: boolean;
   savePending: boolean;
+  award: number;
 };
 
 export type Community = {
@@ -161,6 +162,7 @@ const FeedSlice = createSlice({
           name: elem.data.name,
           votePending: false,
           savePending: false,
+          award: elem.data.all_awardings.length,
         };
       });
       state.Links = [...refinedFeed];
