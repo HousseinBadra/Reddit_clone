@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@mui/material';
 import useGetToken from '../../hooks/useGetToken';
-import './AuthenticationPAge.scss';
+import './AuthenticationPage.scss';
 import { uuidv4 } from '../../utils/uuid';
 
 export default function AuthenticationPage() {
