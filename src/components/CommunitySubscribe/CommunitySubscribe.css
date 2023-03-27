@@ -1,0 +1,17 @@
+.community-subscribe {
+  min-height: 100px;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .community-subscribe {
+    flex-direction: column;
+  }
+  .title-div {
+    margin: 0 auto;
+  }
+  .button-div {
+    max-width: 80%;
+    margin: 0 auto;
+  }
+}

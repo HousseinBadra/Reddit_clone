@@ -1,0 +1,26 @@
+.CommunityStack {
+  padding: 5px;
+  gap: 5px;
+  position: sticky;
+  top: 0;
+}
+
+.mainGrid {
+  margin: 0 auto !important;
+}
+
+svg {
+  font-size: 18px !important;
+}
+
+@media (max-width: 600px) {
+  .CommunityStack {
+    padding: 0 5px;
+    gap: 5px;
+    max-width: 90%;
+    margin: 0 auto;
+    overflow-x: scroll;
+    justify-content: center;
+    align-items: center;
+  }
+}
